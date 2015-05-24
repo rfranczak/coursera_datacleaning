@@ -28,6 +28,7 @@ baseDir <- "./UCI HAR Dataset"
 testDir <- paste(baseDir,"/","test",sep="")
 trainDir <- paste(baseDir,"/","train",sep="")
 tidyFile <- "./tidy.csv"
+featuresMappingFile <- "./features_mapping.csv"
 
 ## download dataset
 download.file(sourceURL, dest=localFile, mode="wb")
@@ -52,6 +53,9 @@ features2$colName<-gsub('[,]','.',features2$colName)
 features2$colName<-gsub('[-]','.',features2$colName)
 # in features2 there is 561 column names 
 
+# write mapping from our column names to original column names
+features_mapping <- data.frame(featureName=features2$colName,origFeatureName=features$colName)
+write.csv(features_mapping, featuresMappingFile, row.names=FALSE, quotes=FALSE)
 
 ## select mean or std columns
 features_columns<- grep("mean|std",features2$colName,ignore.case=TRUE,value=TRUE)
@@ -81,7 +85,7 @@ test <- merge(test,activityLabels, by="activityID",all.x=TRUE)
 test <- cbind(test, X_test[ , c(features_columns)])
 
 ##
-## read test data files
+## read train data files
 ##
 #  subject data (only id in this file)
 sub_train <- read.csv(paste(trainDir,"subject_train.txt",sep="/"),header=FALSE,sep=" ",col.names=c("subjectID"))
@@ -115,7 +119,9 @@ data2 <- tbl_df(data)
 ## 
 ## grouping data by activityLabel (it is one-to-one with activityID and key columns are excluded from "funs()"
 ##
-sum_data <-  data2 %>% group_by(activityID,subjectID,activityLabel) %>% summarise_each(funs(mean))			 
+sum_data <-  data2 %>% \
+			 group_by(activityID,subjectID,activityLabel) %>% \
+			 summarise_each(funs(mean))			 
 
-## write tidy dataset
+## write independent tidy dataset with summarized data
 write.table(sum_data,file=tidyFile, col.names = FALSE)
