@@ -12,6 +12,14 @@ https://d396qusza40orc.cloudfront.net/getdata%2Fprojectfiles%2FUCI%20HAR%20Datas
 # Project content
 
 This project contains following files:
-* **run_analysis.R** - script which download and process dataset
+* **run_analysis.R** - script which download and process dataset producing 3 objects:
+	* data - dataset with merged test & train data (only features with 'mean' or 'std' in feature name
+	* sum_data - summarized data with average of each feature from object data aggregated for each activity&subject
+	* features_mapping - mapping for features names from names used in 2 objects above to original features names from source data set
 * **CodeBook.md** - describes the variables, the data, and transformations
 * **tidy.csv** - independent tidy data set with the average of each variable for each activity and each subject.
+* **features_mapping.csv** - features_mapping writtent to csv file with header  (this helps to find full description of feture in original Codebook)
+
+# libraries used
+This project is using library *stringr* from cleaning features names
+and library *dplyr* for data aggregation
